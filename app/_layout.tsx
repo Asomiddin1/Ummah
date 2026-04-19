@@ -4,9 +4,13 @@ import "./global.css";
 
 export default function RootLayout() {
   return (
-    <Stack>
+    <>
+      {/* StatusBar Stack-dan tashqarida, eng tepada bo'lishi kerak */}
       <StatusBar barStyle="light-content" />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-    </Stack>
+      
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      </Stack>
+    </>
   );
 }
