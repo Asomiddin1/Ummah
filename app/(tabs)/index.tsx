@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LinearGradient } from "expo-linear-gradient"; // <-- GRADIENT IMPORT QILINDI
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -162,75 +163,82 @@ const PrayerTimesScreen = () => {
 
   // ─────────────────────────────────────────────────────────────────────────────
   return (
-    <SafeAreaView className="flex-1 bg-[#0D1321]">
-      <ScrollView className="flex-1 px-5 pt-4" showsVerticalScrollIndicator={false}>
+    // ── GRADIENT QO'SHILGAN QISM ──
+    <LinearGradient
+      colors={["#0D1321", "#1A2A44", "#0D1321"]} // O'zingizga yoqqan ranglarni shu yerda o'zgartirishingiz mumkin
+      style={{ flex: 1 }}
+    >
+      {/* SafeAreaView dan qattiq fon rangi (bg-[#0D1321]) olib tashlandi */}
+      <SafeAreaView className="flex-1">
+        <ScrollView className="flex-1 px-5 pt-4" showsVerticalScrollIndicator={false}>
 
-        {/* Header */}
-        <View className="flex-row justify-between items-center mb-6">
-          <Text className="text-white text-xl font-bold tracking-widest">UMMAH</Text>
-          <View className="flex-row space-x-3 gap-2">
-            <TouchableOpacity className="bg-white/10 p-2 rounded-full">
-              <Feather name="bell" size={20} color="white" />
-            </TouchableOpacity>
+          {/* Header */}
+          <View className="flex-row justify-between items-center mb-6">
+            <Text className="text-white text-xl font-bold tracking-widest">UMMAH</Text>
+            <View className="flex-row space-x-3 gap-2">
+              <TouchableOpacity className="bg-white/10 p-2 rounded-full">
+                <Feather name="bell" size={20} color="white" />
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
 
-        <LocationSelector
-          selectedCity={selectedCity}
-          selectedRegion={selectedRegion}
-          selectedCountry={selectedCountry}
-          onPress={openLocationModal}
-        />
-        {/* Soat + keyingi namoz */}
-        <ClockWidget now={now} next={next} />
-
-        {/* Loading */}
-        {loading && !timings && (
-          <ActivityIndicator size="large" color="#2A64F6" className="mt-6" />
-        )}
-
-        {/* Namoz vaqtlari */}
-        {timings && !loading && (
-          <PrayerTimesCard
-            timings={timings}
+          <LocationSelector
             selectedCity={selectedCity}
-            nextPrayerName={next?.name}
-            now={now}
+            selectedRegion={selectedRegion}
+            selectedCountry={selectedCountry}
+            onPress={openLocationModal}
           />
-        )}
+          {/* Soat + keyingi namoz */}
+          <ClockWidget now={now} next={next} />
 
-        {/* Muqaddas qadamjolar */}
-        <Text className="text-white font-bold mb-4 text-lg">Muqaddas qadamjolar</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-10">
-          {PLACES.map((place) => (
-            <TouchableOpacity key={place.id} className="mr-4 items-center">
-              <Image
-                source={{ uri: place.image }}
-                className="w-28 h-28 rounded-2xl mb-2"
-                resizeMode="cover"
-              />
-              <Text className="text-gray-300 text-sm font-medium">{place.name}</Text>
-            </TouchableOpacity>
-          ))}
+          {/* Loading */}
+          {loading && !timings && (
+            <ActivityIndicator size="large" color="#2A64F6" className="mt-6" />
+          )}
+
+          {/* Namoz vaqtlari */}
+          {timings && !loading && (
+            <PrayerTimesCard
+              timings={timings}
+              selectedCity={selectedCity}
+              nextPrayerName={next?.name}
+              now={now}
+            />
+          )}
+
+          {/* Muqaddas qadamjolar */}
+          <Text className="text-white font-bold mb-4 text-lg">Muqaddas qadamjolar</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-10">
+            {PLACES.map((place) => (
+              <TouchableOpacity key={place.id} className="mr-4 items-center">
+                <Image
+                  source={{ uri: place.image }}
+                  className="w-28 h-28 rounded-2xl mb-2"
+                  resizeMode="cover"
+                />
+                <Text className="text-gray-300 text-sm font-medium">{place.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
         </ScrollView>
-      </ScrollView>
 
-      {/* Modal */}
-      <LocationModal
-        visible={modalVisible}
-        loading={loading}
-        selectionStep={selectionStep}
-        countries={countries}
-        regions={regions}
-        cities={cities}
-        selectedCity={selectedCity}
-        onClose={() => setModalVisible(false)}
-        onBack={handleModalBack}
-        onSelectCountry={handleSelectCountry}
-        onSelectRegion={handleSelectRegion}
-        onSelectCity={handleSelectCity}
-      />
-    </SafeAreaView>
+        {/* Modal */}
+        <LocationModal
+          visible={modalVisible}
+          loading={loading}
+          selectionStep={selectionStep}
+          countries={countries}
+          regions={regions}
+          cities={cities}
+          selectedCity={selectedCity}
+          onClose={() => setModalVisible(false)}
+          onBack={handleModalBack}
+          onSelectCountry={handleSelectCountry}
+          onSelectRegion={handleSelectRegion}
+          onSelectCity={handleSelectCity}
+        />
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 

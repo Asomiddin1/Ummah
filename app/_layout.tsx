@@ -7,7 +7,6 @@ export default function RootLayout() {
     <>
       {/* StatusBar Stack-dan tashqarida, eng tepada bo'lishi kerak */}
       <StatusBar barStyle="light-content" />
-      
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>

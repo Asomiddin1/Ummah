@@ -1,7 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { Text, View } from "react-native";
-import DayProgressBar from "./Sunprogressbar";
 
 
 type Prayer = {
@@ -80,7 +79,6 @@ const PrayerTimesCard = ({ timings, selectedCity, nextPrayerName, now }: Props) 
           );
         })}
       </View>
-   <DayProgressBar fajr={timings.fajr} isha={timings.isha} now={now} />
       {/* 4. Qo'shimcha vaqtlar (Imsak, Quyosh, Tun) - Juda ixcham qator */}
       <View className="flex-row justify-between bg-white/5 rounded-2xl p-4 mt-2">
         <View className="items-center flex-1 border-r border-white/10">
