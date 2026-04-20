@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { DrawerActions } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
 import {
@@ -19,6 +20,7 @@ import {
 } from "../../src/client/api";
 
 import LocationSelector from "@/src/components/Locationselector ";
+import { useNavigation } from "expo-router";
 import ClockWidget from "../../src/components/Clockwidget";
 import LocationModal from "../../src/components/Locationmodal";
 import PrayerTimesCard from "../../src/components/Prayertimescard";
@@ -28,26 +30,45 @@ import { useClock, useNextPrayer } from "../../src/hooks/clock";
 const STORAGE_KEY = "selected_location";
 
 const PLACES = [
-  { id: 1, name: "Kaaba",   image: "https://www.komar.de/media/catalog/product/cache/8/image/9df78eab33525d08d6e5fb8d27136e95/import/api-v1.1-file-public-files-pim-assets-97-ad-84-62-6284ad972eff292d45ce1a2e-images-72-65-ba-65-65ba65725b4bee91324cc62f-8-110-i.01.jpg" },
-  { id: 2, name: "Medina",  image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/HAC_2010_MEDINE_MESCIDI_NEBEVI_-_panoramio.jpg/1280px-HAC_2010_MEDINE_MESCIDI_NEBEVI_-_panoramio.jpg" },
-  { id: 3, name: "Al aqsa", image: "https://upload.wikimedia.org/wikipedia/commons/8/87/Jerusalem-2013-Temple_Mount-Al-Aqsa_Mosque_%28NE_exposure%29.jpg" },
+  {
+    id: 1,
+    name: "Kaaba",
+    image:
+      "https://www.komar.de/media/catalog/product/cache/8/image/9df78eab33525d08d6e5fb8d27136e95/import/api-v1.1-file-public-files-pim-assets-97-ad-84-62-6284ad972eff292d45ce1a2e-images-72-65-ba-65-65ba65725b4bee91324cc62f-8-110-i.01.jpg",
+  },
+  {
+    id: 2,
+    name: "Medina",
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/HAC_2010_MEDINE_MESCIDI_NEBEVI_-_panoramio.jpg/1280px-HAC_2010_MEDINE_MESCIDI_NEBEVI_-_panoramio.jpg",
+  },
+  {
+    id: 3,
+    name: "Al aqsa",
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/8/87/Jerusalem-2013-Temple_Mount-Al-Aqsa_Mosque_%28NE_exposure%29.jpg",
+  },
 ];
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 const PrayerTimesScreen = () => {
   const now = useClock();
 
-  const [modalVisible,   setModalVisible]   = useState(false);
-  const [loading,        setLoading]        = useState(false);
-  const [selectionStep,  setSelectionStep]  = useState<"country" | "region" | "city">("country");
+  const navigation = useNavigation(); // Shu qatorni qo'shasiz
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [selectionStep, setSelectionStep] = useState<
+    "country" | "region" | "city"
+  >("country");
 
   const [countries, setCountries] = useState<any[]>([]);
-  const [regions,   setRegions]   = useState<any[]>([]);
-  const [cities,    setCities]    = useState<any[]>([]);
+  const [regions, setRegions] = useState<any[]>([]);
+  const [cities, setCities] = useState<any[]>([]);
 
   const [selectedCountry, setSelectedCountry] = useState<any>(null);
-  const [selectedRegion,  setSelectedRegion]  = useState<any>(null);
-  const [selectedCity,    setSelectedCity]    = useState<any>(null);
+  const [selectedRegion, setSelectedRegion] = useState<any>(null);
+  const [selectedCity, setSelectedCity] = useState<any>(null);
 
   const [timings, setTimings] = useState<any>(null);
 
@@ -113,7 +134,7 @@ const PrayerTimesScreen = () => {
       setRegions(
         res.success && Array.isArray(res.data) && res.data[0]?.regions
           ? res.data[0].regions
-          : []
+          : [],
       );
     } catch (err) {
       console.error("Viloyat yuklashda xato:", err);
@@ -131,7 +152,11 @@ const PrayerTimesScreen = () => {
     try {
       setLoading(true);
       const res = await getCities(region.id);
-      setCities(res.success && res.data?.country?.region?.cities ? res.data.country.region.cities : []);
+      setCities(
+        res.success && res.data?.country?.region?.cities
+          ? res.data.country.region.cities
+          : [],
+      );
     } catch (err) {
       console.error("Shahar yuklashda xato:", err);
       setCities([]);
@@ -145,14 +170,18 @@ const PrayerTimesScreen = () => {
     setModalVisible(false);
     await AsyncStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ country: selectedCountry, region: selectedRegion, city })
+      JSON.stringify({
+        country: selectedCountry,
+        region: selectedRegion,
+        city,
+      }),
     );
     await loadTimings(city.id);
   };
 
   const openLocationModal = () => {
     setSelectionStep(
-      !selectedCountry ? "country" : !selectedRegion ? "region" : "city"
+      !selectedCountry ? "country" : !selectedRegion ? "region" : "city",
     );
     setModalVisible(true);
   };
@@ -175,11 +204,26 @@ const PrayerTimesScreen = () => {
       style={{ flex: 1 }}
     >
       <SafeAreaView className="flex-1">
-        <ScrollView className="flex-1 px-5 pt-4" showsVerticalScrollIndicator={false}>
-
-          {/* Header */}
+        <ScrollView
+          className="flex-1 px-5 pt-4"
+          showsVerticalScrollIndicator={false}
+        >
           <View className="flex-row justify-between items-center mb-6">
-            <Text className="text-white text-xl font-bold tracking-widest">UMMAH</Text>
+            {/* CHAP TOMON: Menyu va Sarlavha */}
+            <View className="flex-row items-center gap-3">
+              <TouchableOpacity
+                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+                className="bg-white/10 p-2 rounded-full"
+              >
+                <Feather name="menu" size={20} color="white" />
+              </TouchableOpacity>
+
+              <Text className="text-white text-xl font-bold tracking-widest">
+                UMMAH
+              </Text>
+            </View>
+
+            {/* O'NG TOMON: Qo'ng'iroqcha */}
             <View className="flex-row space-x-3 gap-2">
               <TouchableOpacity className="bg-white/10 p-2 rounded-full">
                 <Feather name="bell" size={20} color="white" />
@@ -212,8 +256,14 @@ const PrayerTimesScreen = () => {
           )}
 
           {/* Muqaddas qadamjolar */}
-          <Text className="text-white font-bold mb-4 text-lg">Muqaddas qadamjolar</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-10">
+          <Text className="text-white font-bold mb-4 text-lg">
+            Muqaddas qadamjolar
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            className="mb-10"
+          >
             {PLACES.map((place) => (
               <TouchableOpacity key={place.id} className="mr-4 items-center">
                 <Image
@@ -221,7 +271,9 @@ const PrayerTimesScreen = () => {
                   className="w-28 h-28 rounded-2xl mb-2"
                   resizeMode="cover"
                 />
-                <Text className="text-gray-300 text-sm font-medium">{place.name}</Text>
+                <Text className="text-gray-300 text-sm font-medium">
+                  {place.name}
+                </Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
