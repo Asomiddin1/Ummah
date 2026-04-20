@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { LinearGradient } from "expo-linear-gradient"; // <-- GRADIENT IMPORT QILINDI
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -163,12 +163,17 @@ const PrayerTimesScreen = () => {
 
   // ─────────────────────────────────────────────────────────────────────────────
   return (
-    // ── GRADIENT QO'SHILGAN QISM ──
+    // ── GRADIENT BOYITILGAN QISM ──
     <LinearGradient
-      colors={["#0D1321", "#1A2A44", "#0D1321"]} // O'zingizga yoqqan ranglarni shu yerda o'zgartirishingiz mumkin
+      // Ko'proq rang qo'shildi: Quyuqroq -> Ko'kroq -> Quyuqroq
+      colors={["#040814", "#0D1321", "#192B4D", "#0D1321", "#02040A"]}
+      // Yo'nalish tepadan pastga (x: 0, y: 0 dan x: 0, y: 1 gacha)
+      start={{ x: 0.5, y: 0 }}
+      end={{ x: 0.5, y: 1 }}
+      // Ranglarning ekranda qancha joy egallashi (0 dan 1 gacha)
+      locations={[0, 0.2, 0.5, 0.8, 1]}
       style={{ flex: 1 }}
     >
-      {/* SafeAreaView dan qattiq fon rangi (bg-[#0D1321]) olib tashlandi */}
       <SafeAreaView className="flex-1">
         <ScrollView className="flex-1 px-5 pt-4" showsVerticalScrollIndicator={false}>
 
